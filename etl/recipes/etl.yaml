@@ -18,29 +18,29 @@ ingredients:
     key: "geo,year"
     value:
       # - forest_area_elu2
-      - forestland_area_elu1
-      - planted_forest_area_ile
-      - primary_forest_area_ile
+      - gf_forestland_area
+      - rl_planted_forest_area
+      - rl_primary_forest_area
 
   - id: fao_forest-datapoints-alt-chn  # indicators using alternative country code for China
     dataset: *d1
     key: "geo,year"
     value:
-      - forest_land_share_in_land_area_ele1
+      - rl_forest_land_share_in_land_area
 
-  - id: fao_food-datapoints-1  # pre-2013 datapoints
+  - id: fao_food-datapoints-1  # new methodology
     dataset: *d1
     key: "geo,year"
     value:
-      - sugar_sweeteners_food_supply_quantity_kg_capita_yr_fea
-      - grand_total_food_supply_kcal_capita_day_fea
+      - fbs_sugar_sweeteners_food_supply_quantity_kg_capita_yr
+      - fbs_grand_total_food_supply_kcal_capita_day
 
-  - id: fao_food-datapoints-2  # post-2013 datapoints
+  - id: fao_food-datapoints-2  # old methodlogy
     dataset: *d1
     key: "geo,year"
     value:
-      - sugar_sweeteners_food_supply_quantity_kg_capita_yr_fea1
-      - grand_total_food_supply_kcal_capita_day_fea1
+      - fbsh_sugar_sweeteners_food_supply_quantity_kg_capita_yr
+      - fbsh_grand_total_food_supply_kcal_capita_day
 
   - id: fao-countries
     dataset: *d1
@@ -58,25 +58,25 @@ cooking:
       options:
         dictionary:
           year: time
-          sugar_sweeteners_food_supply_quantity_kg_capita_yr_fea: sugar_per_person_g_per_day
-          grand_total_food_supply_kcal_capita_day_fea: food_supply_kilocalories_per_person_and_day
-      result: fao_food-datapoints-translated-1
-    - procedure: translate_header
-      ingredients:
-        - fao_food-datapoints-2
-      options:
-        dictionary:
-          year: time
-          sugar_sweeteners_food_supply_quantity_kg_capita_yr_fea1: sugar_per_person_g_per_day
-          grand_total_food_supply_kcal_capita_day_fea1: food_supply_kilocalories_per_person_and_day
-      result: fao_food-datapoints-translated-2
-    - procedure: merge
-      ingredients:
-        - fao_food-datapoints-translated-1
-        - fao_food-datapoints-translated-2
-      options:
-        deep: true
+          fbs_sugar_sweeteners_food_supply_quantity_kg_capita_yr: sugar_per_person_g_per_day
+          fbs_grand_total_food_supply_kcal_capita_day: food_supply_kilocalories_per_person_and_day
       result: fao_food-datapoints-translated
+    # - procedure: translate_header
+    #   ingredients:
+    #     - fao_food-datapoints-2
+    #   options:
+    #     dictionary:
+    #       year: time
+    #       fbsh_sugar_sweeteners_food_supply_quantity_kg_capita_yr: sugar_per_person_g_per_day
+    #       fbsh_grand_total_food_supply_kcal_capita_day: food_supply_kilocalories_per_person_and_day
+    #   result: fao_food-datapoints-translated-2
+    # - procedure: merge
+    #   ingredients:
+    #     - fao_food-datapoints-translated-1
+    #     - fao_food-datapoints-translated-2
+    #   options:
+    #     deep: true
+    #   result: fao_food-datapoints-translated
 
     - procedure: run_op
       ingredients:
@@ -91,9 +91,9 @@ cooking:
         - fao_forest-datapoints
       options:
         op:
-          forest_land_total_area_ha: forestland_area_elu1 * 1000
-          planted_forest_area_ha: planted_forest_area_ile * 1000
-          primary_forest_area_ha: primary_forest_area_ile * 1000
+          forest_land_total_area_ha: gf_forestland_area * 1000
+          planted_forest_area_ha: rl_planted_forest_area * 1000
+          primary_forest_area_ha: rl_primary_forest_area * 1000
       result: fao_forest-datapoints-op
 
     - procedure: filter
@@ -102,9 +102,9 @@ cooking:
       options:
         item:
           $nin:
-            - forestland_area_elu1
-            - planted_forest_area_ile
-            - primary_forest_area_ile
+            - gf_forestland_area
+            - rl_planted_forest_area
+            - rl_primary_forest_area
       result: fao_forest-datapoints-op-filtered
 
     - procedure: translate_header
@@ -121,7 +121,7 @@ cooking:
       options:
         dictionary:
           year: time
-          forest_land_share_in_land_area_ele1: forest_coverage_percent
+          rl_forest_land_share_in_land_area: forest_coverage_percent
       result: fao_forest-datapoints-alt-chn-translated
 
     - procedure: translate_column
